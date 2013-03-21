@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--<html manifest="meterlog.manifest">-->
+<html>
+  <head>
+    <meta charset="utf8">
+    <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>MeterLog</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="js/html5.js"></script>
+    <![endif]-->
+    <!--<link rel="apple-touch-icon" href="" />
+    <link rel="apple-touch-startup-image" href="" />-->
+    <style>
+    #maincontainer { margin-top:50px; }
+    </style>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <!--<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>-->
+          <a class="brand" href="/">MeterLog</a>
+          <!--<div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="dropdown">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                  Locations
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" id="locationsMenu">
+                  
+                </ul>
+              </li>
+            </ul>
+          </div>-->
+        </div>
+      </div>
+    </div>
+
+<div class="container" id="maincontainer">
+  <p id="stat"></p>
+  
+  <form class="form-inline" name="newreading">
+	<input type="tel" name="reading" class="input-small" placeholder="123456">
+	<button type="submit" name="submit" class="btn">Save</button>
+  </form>
+  
+  <ul id="readings">
+
+  </ul>
+</div>
+
+    <script src="js/jquery.min.js"></script>
+	<script src="js/dateformat.js"></script>
+
+<script>
+function UrlExists(url) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status!=404;
+}
+Array.prototype.remove = function(from, to) {
+  var rest = this.slice((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply(this, rest);
+};
+
+$('form[name="newreading"]').submit(function(event){
+    event.preventDefault();
+    
+	var now = new Date();
+	//now.format("yy-MM-dd h:mm tt");
+	now.format('c');
+	var ts = new Date().getTime();
+	var reading = $('input[name="reading"]').val();
+	$('#readings').prepend('<li id="'+ts+'"><strong>'+now+': </strong>'+reading+'</li>'); 
+	var storeMe = new Object();
+	storeMe.ts = ts;
+	storeMe.date = now;
+	storeMe.reading = reading;
+	console.log(storeMe);
+	saveData(storeMe);
+});
+
+$(document).ready(function() {
+    if (localStorage.hasOwnProperty('meterlogData')) {
+      var currentStorage = JSON.parse(localStorage.getItem('meterlogData'));
+      for (i=0;i<currentStorage.length;i++) {
+        $('#readings').prepend('<li id="'+currentStorage[i].ts+'"><strong>'+currentStorage[i].date+': </strong>'+currentStorage[i].reading+'</li>'); 
+      }
+    }
+});
+
+/* LocalStorage functions */
+function resetAllData() {
+  localStorage.removeItem('meterlogData');
+};
+
+function saveData(storeMe) {
+	if (localStorage.hasOwnProperty('meterlogData')) {
+		var currentStorage = JSON.parse(localStorage.getItem('meterlogData'));
+		currentStorage.push(storeMe);
+		localStorage.setItem('meterlogData', JSON.stringify(currentStorage));
+		console.log("Appended to existing localStorage");
+    } else {
+		var newStorage = new Array();
+		newStorage.push(storeMe);
+		localStorage.setItem('meterlogData', JSON.stringify(newStorage));
+		console.log("New localStorage created");
+	}
+};
+
+</script>
+  </body>
+</html>
