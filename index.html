@@ -22,8 +22,8 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="/">MeterLog</a>
-		  <button type="button" name="reset" onclick="confirm('Delete data?')?resetAllData():false;" class="btn btn-danger pull-right">Reset</button>
+          <a class="brand" href="#">MeterLog</a>
+		  <button type="button" name="reset" onclick="confirm('Delete data?')?resetAllData():false;reloadData();" class="btn btn-danger pull-right">Reset</button>
 		  <button style="margin-right:10px;" type="button" name="upload" onclick="uploadData()" class="btn btn-info pull-right">Upload</button>
         </div>
       </div>
@@ -58,10 +58,10 @@ Array.prototype.remove = function(from, to) {
   this.length = from < 0 ? this.length + from : from;
   return this.push.apply(this, rest);
 };
+var uuid;
 
 $('form[name="newreading"]').submit(function(event){
-    event.preventDefault();
-    
+    event.preventDefault();  
 	var now = new Date();
 	//now.format("yy-MM-dd h:mm tt");
 	now.format('c');
@@ -76,13 +76,27 @@ $('form[name="newreading"]').submit(function(event){
 	saveData(storeMe);
 });
 
-$(document).ready(function() {
-    if (localStorage.hasOwnProperty('meterlogData')) {
+function reloadData() {
+	if (localStorage.hasOwnProperty('meterlogData')) {
+	  $('#readings').empty();
       var currentStorage = JSON.parse(localStorage.getItem('meterlogData'));
       for (i=0;i<currentStorage.length;i++) {
         $('#readings').prepend('<li id="'+currentStorage[i].ts+'"><strong>'+currentStorage[i].date+': </strong>'+currentStorage[i].reading+'</li>'); 
       }
-    }
+    } else {
+		$('#readings').empty();
+	}
+};
+
+function setUUID() {
+	uuid = UUID.generate();
+	localStorage.setItem('meterlogUUID',uuid);
+};
+
+$(document).ready(function() {
+    // Check whether unique id exists, otherwise set
+	uuid = localStorage.hasOwnProperty('meterlogUUID')?localStorage.getItem('meterlogUUID'):setUUID();
+	reloadData();
 });
 
 /* LocalStorage functions */
@@ -106,7 +120,6 @@ function saveData(storeMe) {
 
 function uploadData() {
 	if (navigator.onLine) {
-		var uuid = UUID.generate();
 		if (localStorage.hasOwnProperty('meterlogData')) {
 			var currentStorage = JSON.parse(localStorage.getItem('meterlogData'));
 			var uploadData = new Object();
@@ -115,14 +128,13 @@ function uploadData() {
 			localStorage.setItem("meterlogUploadData",JSON.stringify(uploadData));
 			$.ajax({
 				type: "POST",
-				//the url where you want to sent the userName and password to
 				url: '/upload',
 				dataType: 'json',
 				async: false,
-				//json object to sent to the authentication url
-				data: localStorage.getItem("meterlogUploadData"),
-				success: function () {
-					alert("Successfully uploaded :)"); 
+				data: uploadData,
+				statusCode: {
+					200: function () { alert("Data successfully saved :)"); },
+					500: function () { alert("Something went wrong... sorry!"); }
 				}
 			});
 		} else {
