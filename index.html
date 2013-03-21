@@ -137,7 +137,7 @@ function uploadData() {
 				dataType: 'json',
 				async: false,
 				//json object to sent to the authentication url
-				data: JSON.stringify(localStorage.getItem('meterlogData')),
+				data: JSON.stringify(currentStorage),
 				success: function () {
 					alert("Successfully uploaded :)"); 
 				}
