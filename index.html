@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html manifest="meterlog.manifest">
+<!--<html manifest="meterlog.manifest">-->
+<html>
   <head>
     <meta charset="utf8">
     <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
@@ -27,7 +28,8 @@
             <span class="icon-bar"></span>
           </button>-->
           <a class="brand" href="/">MeterLog</a>
-		  <button type="reset" name="reset" onclick="confirm('Delete data?')?resetAllData():false;" class="btn btn-danger pull-right">Reset</button>
+		  <button type="button" name="reset" onclick="confirm('Delete data?')?resetAllData():false;" class="btn btn-danger pull-right">Reset</button>
+		  <button style="margin-right:10px;" type="button" name="upload" onclick="uploadData()" class="btn btn-info pull-right">Upload</button>
           <!--<div class="nav-collapse collapse">
             <ul class="nav">
               <li class="dropdown">
@@ -60,6 +62,7 @@
 
     <script src="./js/jquery.min.js"></script>
 	<script src="./js/dateformat.js"></script>
+	<script src="./js/uuid.core.js"></script>
 
 <script>
 function UrlExists(url) {
@@ -117,6 +120,27 @@ function saveData(storeMe) {
 		localStorage.setItem('meterlogData', JSON.stringify(newStorage));
 		console.log("New localStorage created");
 	}
+};
+
+function uploadData() {
+	if (navigator.onLine) {
+        alert ('There is a network connection');
+		alert(UUID.generate());
+		$.ajax({
+			type: "POST",
+			//the url where you want to sent the userName and password to
+			url: '/upload',
+			dataType: 'json',
+			async: false,
+			//json object to sent to the authentication url
+			data: JSON.stringify(localStorage.getItem('meterlogData')),
+			success: function () {
+				alert("Successfully uploaded :)"); 
+			}
+		});
+    } else {
+        alert ('There is no network connection - please connect to the internet and try again');
+    }
 };
 
 </script>

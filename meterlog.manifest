@@ -4,8 +4,9 @@ css/bootstrap.min.css
 css/bootstrap-responsive.min.css
 js/jquery.min.js
 js/dateformat.js
+js/uuid.core.js
 
 NETWORK:
 *
 
-#version: 2013-03-21a
+#version: 2013-03-21b
