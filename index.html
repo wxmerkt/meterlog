@@ -5,11 +5,11 @@
     <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>MeterLog</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap-responsive.min.css" rel="stylesheet">
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-    <script src="js/html5.js"></script>
+    <script src="./js/html5.js"></script>
     <![endif]-->
     <!--<link rel="apple-touch-icon" href="" />
     <link rel="apple-touch-startup-image" href="" />-->
@@ -27,6 +27,7 @@
             <span class="icon-bar"></span>
           </button>-->
           <a class="brand" href="/">MeterLog</a>
+		  <button type="reset" name="reset" onclick="confirm('Delete data?')?resetAllData():false;" class="btn btn-danger pull-right">Reset</button>
           <!--<div class="nav-collapse collapse">
             <ul class="nav">
               <li class="dropdown">
@@ -51,14 +52,14 @@
 	<input type="tel" name="reading" class="input-small" placeholder="123456">
 	<button type="submit" name="submit" class="btn">Save</button>
   </form>
-  
+
   <ul id="readings">
 
   </ul>
 </div>
 
-    <script src="js/jquery.min.js"></script>
-	<script src="js/dateformat.js"></script>
+    <script src="./js/jquery.min.js"></script>
+	<script src="./js/dateformat.js"></script>
 
 <script>
 function UrlExists(url) {
