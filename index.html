@@ -22,27 +22,9 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <!--<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>-->
           <a class="brand" href="/">MeterLog</a>
 		  <button type="button" name="reset" onclick="confirm('Delete data?')?resetAllData():false;" class="btn btn-danger pull-right">Reset</button>
 		  <button style="margin-right:10px;" type="button" name="upload" onclick="uploadData()" class="btn btn-info pull-right">Upload</button>
-          <!--<div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">
-                  Locations
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu" id="locationsMenu">
-                  
-                </ul>
-              </li>
-            </ul>
-          </div>-->
         </div>
       </div>
     </div>
@@ -127,9 +109,10 @@ function uploadData() {
 		var uuid = UUID.generate();
 		if (localStorage.hasOwnProperty('meterlogData')) {
 			var currentStorage = JSON.parse(localStorage.getItem('meterlogData'));
-			var userInfo = new Object();
-			userInfo.uuid = uuid;
-			currentStorage.push(userInfo);
+			var uploadData = new Object();
+			uploadData.data = currentStorage;
+			uploadData.uuid = uuid;
+			localStorage.setItem("meterlogUploadData",JSON.stringify(uploadData));
 			$.ajax({
 				type: "POST",
 				//the url where you want to sent the userName and password to
@@ -137,7 +120,7 @@ function uploadData() {
 				dataType: 'json',
 				async: false,
 				//json object to sent to the authentication url
-				data: JSON.stringify(currentStorage),
+				data: JSON.stringify(localStorage.getItem("meterlogUploadData")),
 				success: function () {
 					alert("Successfully uploaded :)"); 
 				}
