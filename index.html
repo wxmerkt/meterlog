@@ -124,20 +124,27 @@ function saveData(storeMe) {
 
 function uploadData() {
 	if (navigator.onLine) {
-        alert ('There is a network connection');
-		alert(UUID.generate());
-		$.ajax({
-			type: "POST",
-			//the url where you want to sent the userName and password to
-			url: '/upload',
-			dataType: 'json',
-			async: false,
-			//json object to sent to the authentication url
-			data: JSON.stringify(localStorage.getItem('meterlogData')),
-			success: function () {
-				alert("Successfully uploaded :)"); 
-			}
-		});
+		var uuid = UUID.generate();
+		if (localStorage.hasOwnProperty('meterlogData')) {
+			var currentStorage = JSON.parse(localStorage.getItem('meterlogData'));
+			var userInfo = new Object();
+			userInfo.uuid = uuid;
+			currentStorage.push(userInfo);
+			$.ajax({
+				type: "POST",
+				//the url where you want to sent the userName and password to
+				url: '/upload',
+				dataType: 'json',
+				async: false,
+				//json object to sent to the authentication url
+				data: JSON.stringify(localStorage.getItem('meterlogData')),
+				success: function () {
+					alert("Successfully uploaded :)"); 
+				}
+			});
+		} else {
+			alert('You seem to have not recorded any data points yet.');
+		}
     } else {
         alert ('There is no network connection - please connect to the internet and try again');
     }
